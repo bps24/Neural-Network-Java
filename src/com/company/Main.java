@@ -23,12 +23,39 @@ public class Main
 
     public static String dectohex(int [] a)
     {
-       a[0]/16
+       String s= "";
+        int b;
+
+        for(int i=0;i<3;i++)
+        {
+            s+=Main.hex(a[i]/16);
+            s+=Main.hex(a[i]%16);
+        }
+        return s;
     }
 
     public static String check(String a)
     {
+        return a;
+    }
+    public static char hex(int a)
+    {
+        if(a<10)
+            return (char)a;
+        else if(a==10)
+            return 'a';
+        else if(a==11)
+            return 'b';
+        else if(a==12)
+            return 'c';
+        else if(a==13)
+            return 'd';
+        else if(a==14)
+            return 'e';
+        else
+            return 'f';
 
     }
+
 
 }
