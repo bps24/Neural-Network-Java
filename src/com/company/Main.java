@@ -1,38 +1,35 @@
 package com.company;
+import java.io.*;
 import java.util.*;
 
 public class Main
 {
-
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
-	    Scanner k = new Scanner(System.in);
         System.out.println("Enter a RGB Triplet");
-
-        int [] dec = new int [3];
-
-        for(int i=0;i<=2;i++) dec[i]=Integer.parseInt(k.next());
-
-        System.out.println(Main.check(Main.dectohex(dec)));
+        for(int i=0;i<=2;i++)
+            dec[i]=Integer.parseInt(k.next());
+        System.out.println(Main.checkhtml(Main.dectohex(dec)));
     }
 
-
-    public static String dectohex(int [] a)
+    private static String dectohex(int [] a)
     {
-       StringBuilder s = new StringBuilder();
-        for(int i=0;i<3;i++)
-        {
-            s.append(Main.hex(a[i]/16));
-            s.append(Main.hex(a[i]%16));
-        }
-        return s.toString();
+       for(int i=0;i<3;i++)
+       {
+           s.append(Main.hex(a[i]/16));
+           s.append(Main.hex(a[i]%16));
+       }
+       return s.toString();
     }
 
-    public static String check(String a)
+    private static String checkhtml(String a)throws IOException
     {
-       return a;
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        while ((st = br.readLine()) != null) if(st.toUpperCase().contains(a.toUpperCase())) return st;
+        return "#" + a.toUpperCase();
     }
-    public static String hex(int a)
+
+    private static String hex(int a)
     {
         if(a<10) return Integer.toString(a);
         else if(a==10) return "a";
@@ -43,17 +40,9 @@ public class Main
         else return "f";
     }
 
-    public static int [][] scanColors()
-    {
-        Scanner k = new Scanner("C:\\Users\\bryce_000\\IdeaProjects\\twip-colors-bps24\\src\\com\\company\\html colors");
-        int index=0;
-        int colors [][] = new int[140][2];
-        while(k.hasNext())
-        {
-
-        }
-    }
-
-
-
+    private static Scanner k= new Scanner(System.in);
+    private static int [] dec = new int [3];
+    private static StringBuilder s = new StringBuilder();
+    private static File file = new File("C:\\Users\\bryce_000\\IdeaProjects\\twip-colors-bps24\\src\\com\\company\\html colors");
+    private static String st;
 }
