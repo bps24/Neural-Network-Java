@@ -57,10 +57,44 @@ public class Network {
 
     private void train(double[]input,double[]target,double rate)
     {
-        //if(input.length!=inputSize||target.length!=outputSize)return;
+        if(input.length!=inputSize||target.length!=outputSize)return;
         calculate(input);
         backPropError(target);
         updateWeights(rate);
+    }
+
+    public void train(TrainSet set, int loops, int batchsize)
+    {
+        if(set.inputSize!=inputSize||set.outputSize!=outputSize)return;
+        for(int i=0;i<loops;i++)
+        {
+            TrainSet batch = set.extractBatch(set,batchsize);
+            for(int b=0;b<batchsize;b++)
+            {
+                this.train(batch.getInput(b),batch.getOutput(b),0.3);
+            }
+        }
+    }
+
+    public double error(double[] input, double[] target)
+    {
+        if(input.length!=inputSize||target.length!=outputSize)return 0;
+        calculate(input);
+        double v=0;
+        for(int i=0;i<target.length;i++)
+        {
+            v+=(target[i]-outputs[networkSize-1][i])*(target[i]-outputs[networkSize-1][i]);
+        }
+        return v/(2.0*target.length);
+    }
+
+    public double error(TrainSet set) {
+        double v=0;
+        for(int i=0;i<set.size();i++)
+        {
+            v+=error(set.getInput(i),set.getOutput(i));
+        }
+        return v/set.size();
     }
 
     private void backPropError(double[] target) {
@@ -76,8 +110,7 @@ public class Network {
             }
     }
 
-    private void updateWeights(double rate)
-    {
+    private void updateWeights(double rate) {
         for(int layer=1;layer<networkSize;layer++)
             for(int neuron=0;neuron<layerSize[layer];neuron++)
             {
@@ -91,20 +124,54 @@ public class Network {
             }
     }
 
-    public static void main(String[] args)
+    public static void main2(String[] args)
     {
         //Parameters you can change for the network
-        double input[]=new double[]{1,4,6,7,2,3,4,5,6,4,4,3,3,33,3,5,5,6,7,1,2,3,4,5,6,7,2,1,2,4,5,6};
+        double input[]=new double[]{0,0,1};
         double target[]=new double[]{1,0};
-        double rate=.4;
+        double input2[]=new double[]{1,0,0};
+        double target2[]=new double[]{0,1};
+        double input3[]=new double[]{0,1,0};
+        double target3[]=new double[]{1,1};
+        double input4[]=new double[]{1,1,1};
+        double target4[]=new double[]{0,0};
+        double input5[]=new double[]{1,0,1};
+        double rate=.3;
         int iterations=100000;
         Network net = new Network(input.length,15,8,3,2);
 
         //trains the network
-        for(int i=0;i<iterations;i++) net.train(input,target,rate);
+        for(int i=0;i<iterations;i++){
+            net.train(input,target,rate);
+            net.train(input2,target2,rate);
+            net.train(input3,target3,rate);
+            net.train(input4,target4,rate);
+        }
 
         //prints the network
         System.out.println(Arrays.toString(net.calculate(input)));
+        System.out.println(Arrays.toString(net.calculate(input2)));
+        System.out.println(Arrays.toString(net.calculate(input3)));
+        System.out.println(Arrays.toString(net.calculate(input5)));
+    }
+
+    public static void main(String[] args)
+    {
+        Network net = new Network(4,3,2,1);
+        TrainSet set = new TrainSet(4,1);
+
+        set.addData(new double[]{0.1,0.4,0.6,0.6},new double[]{0.5});
+        set.addData(new double[]{0.3,0.4,0.6,0.5},new double[]{0.7});
+        set.addData(new double[]{0.5,0.4,0.6,0.4},new double[]{0.8});
+        set.addData(new double[]{0.7,0.4,0.6,0.3},new double[]{0.87});
+        set.addData(new double[]{0.9,0.4,0.6,0.2},new double[]{0.89});
+
+        net.train(set,100000,4);
+        for(int i=0;i<5;i++)
+        {
+            System.out.println(Arrays.toString(net.calculate(set.getInput(i))));
+        }
+
     }
 
 
